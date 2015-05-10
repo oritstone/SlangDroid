@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SlangDroid</string>
+
+    <string name="startScreenMessage">Choose what you want to do</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_flow_list">FlowListActivity</string>
+    <string name="runFlowButtonLabel">Run</string>
+    <string name="newFlowButtonLabel">New</string>
+</resources>
