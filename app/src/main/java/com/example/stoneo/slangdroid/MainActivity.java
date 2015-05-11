@@ -1,20 +1,12 @@
 package com.example.stoneo.slangdroid;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-
-import com.example.stoneo.slangdroid.model.Flow;
-
-import java.util.ArrayList;
 
 
-public class Main extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity {
 
 
     @Override
