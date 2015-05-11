@@ -74,7 +74,7 @@ public class FlowLauncherActivity extends ActionBarActivity {
         ViewGroup inputsContainer = (ViewGroup) findViewById(R.id.flowLauncherInputsContainer);
         for(FormFlowInput flowInput : flowInputs) {
             View row = createInputRow(flowInput, inputsContainer);
-            inputsContainer.addView(row);
+            inputsContainer.addView(row, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
     }
 
