@@ -6,4 +6,9 @@
     <string name="title_activity_flow_list">FlowListActivity</string>
     <string name="runFlowButtonLabel">Run</string>
     <string name="newFlowButtonLabel">New</string>
+    <string name="title_activity_flow_launcher">FlowLauncherActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="cancelFlowLaunchingButtonLabel">Cancel</string>
+    <string name="launchFlowButtonLabel">Launch</string>
 </resources>
