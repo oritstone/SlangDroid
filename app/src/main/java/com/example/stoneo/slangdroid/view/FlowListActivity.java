@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.stoneo.slangdroid.view.adapters.FlowListAdapter;
 import com.example.stoneo.slangdroid.R;
@@ -21,7 +20,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,8 +55,6 @@ public class FlowListActivity extends ActionBarActivity implements AdapterView.O
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Flow flow = flowsAdapter.getItem(position);
-        Toast toast = Toast.makeText(this, "Pos: " + position + " id: " + flow.getId(), Toast.LENGTH_SHORT);
-        toast.show();
         Intent flowLauncherIntent = new Intent(this, FlowLauncherActivity.class);
         flowLauncherIntent.putExtra("flowId", flow.getId());
         flowLauncherIntent.putExtra("flowName", flow.getName());
@@ -61,32 +63,42 @@ public class FlowListActivity extends ActionBarActivity implements AdapterView.O
 
     class FlowListTask extends AsyncTask<Void, Void, List<Flow>>{
 
-        //TODO - get from server
         @Override
         protected List<Flow> doInBackground(Void... params) {
 
+            List<Flow> flowsList = new ArrayList<>();
             HttpClient httpClient = new DefaultHttpClient();
             HttpContext localContext = new BasicHttpContext();
-            HttpGet httpGet = new HttpGet("http://localhost:8080/flows");
-            String text = null;
+            HttpGet httpGet = new HttpGet(getString(R.string.baseUrl) + "/flows");
+            StringBuilder sb;
             try {
                 HttpResponse response = httpClient.execute(httpGet, localContext);
                 HttpEntity entity = response.getEntity();
+                sb = new StringBuilder();
+                try {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()), 65728);
+                    String line;
 
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    JSONArray flows = new JSONArray(sb.toString());
+                    int numOfFlows = flows.length();
+                    for (int i = 0; i < numOfFlows; i++) {
+                        JSONObject flow = flows.getJSONObject(i);
+                        flowsList.add(new Flow(flow.getString("name"), flow.getString("id")));
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ArrayList<Flow> flows = new ArrayList<>();
-            flows.add(new Flow("flow1", "id1"));
-            flows.add(new Flow("flow2", "id2"));
-            flows.add(new Flow("flow3", "id3"));
-            flows.add(new Flow("flow4", "id4"));
-            flows.add(new Flow("flow5", "id5"));
-            return flows;
+            return flowsList;
         }
 
-        @Override
+            @Override
         protected void onPostExecute(List<Flow> flows){
             initList(flows);
         }

@@ -1,7 +1,5 @@
 package com.example.stoneo.slangdroid.model;
 
-import java.io.Serializable;
-
 /**
  * Created by stoneo on 5/11/2015.
  */
@@ -11,12 +9,12 @@ public class FormFlowInput {
 
     private String defaultValue;
 
-    private Boolean isRequired;
+    private Boolean required;
 
-    public FormFlowInput(String name, String defaultValue, Boolean isRequired) {
+    public FormFlowInput(String name, String defaultValue, Boolean required) {
         this.name = name;
         this.defaultValue = defaultValue;
-        this.isRequired = isRequired;
+        this.required = required;
     }
 
     public String getName() {
@@ -36,10 +34,10 @@ public class FormFlowInput {
     }
 
     public Boolean isRequired() {
-        return isRequired;
+        return required;
     }
 
-    public void setIsRequired(Boolean isRequired) {
-        this.isRequired = isRequired;
+    public void setRequired(Boolean required) {
+        this.required = required;
     }
 }

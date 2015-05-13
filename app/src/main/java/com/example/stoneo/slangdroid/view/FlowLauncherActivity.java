@@ -23,7 +23,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,33 +125,41 @@ public class FlowLauncherActivity extends ActionBarActivity {
 
         private List<FormFlowInput> getFormFlowInputs(String flowId) {
 
+            List<FormFlowInput> flowInputs = new ArrayList<>();
+
             HttpClient httpClient = new DefaultHttpClient();
             HttpContext localContext = new BasicHttpContext();
-            HttpGet httpGet = new HttpGet("http://localhost:8080/flow/" + flowId);
-            String text = null;
+            HttpGet httpGet = new HttpGet(getString(R.string.baseUrl) + "/flow/" + flowId);
+            StringBuilder sb;
             try {
                 HttpResponse response = httpClient.execute(httpGet, localContext);
                 HttpEntity entity = response.getEntity();
+                sb = new StringBuilder();
+                try {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()), 65728);
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    JSONArray flows = new JSONArray(sb.toString());
+                    int numOfFlows = flows.length();
+                    for (int i = 0; i < numOfFlows; i++) {
+                        JSONObject input = flows.getJSONObject(i);
+                        flowInputs.add(new FormFlowInput(input.getString("name"), input.getString("defaultValue"), input.getBoolean("required")));
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            ArrayList<FormFlowInput> flowInputs1 = new ArrayList<>();
-            flowInputs1.add(new FormFlowInput("input1", "value1", true));
-            flowInputs1.add(new FormFlowInput("input2", "value2", false));
-            flowInputs1.add(new FormFlowInput("input3", "", true));
 
-            ArrayList<FormFlowInput> flowInputs2 = new ArrayList<>();
-            flowInputs2.add(new FormFlowInput("input4", "", true));
-            flowInputs2.add(new FormFlowInput("input5", "", false));
-            flowInputs2.add(new FormFlowInput("input6", "value3", true));
-            flowInputs2.add(new FormFlowInput("input7", "5", true));
+            return flowInputs;
 
-            if(flowId.equals("id1"))
-                return flowInputs1;
-            else
-                return flowInputs2;
+
         }
 
         @Override

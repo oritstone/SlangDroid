@@ -12,4 +12,5 @@
     <string name="cancelFlowLaunchingButtonLabel">Cancel</string>
     <string name="launchFlowButtonLabel">Launch</string>
     <string name="title_activity_run_tracking">RunTrackingActivity</string>
+    <string name="baseUrl">https://cloud-slang-webapp.herokuapp.com</string>
 </resources>
