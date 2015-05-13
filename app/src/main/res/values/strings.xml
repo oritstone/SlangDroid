@@ -11,4 +11,5 @@
     <string name="hello_world">Hello world!</string>
     <string name="cancelFlowLaunchingButtonLabel">Cancel</string>
     <string name="launchFlowButtonLabel">Launch</string>
+    <string name="title_activity_run_tracking">RunTrackingActivity</string>
 </resources>

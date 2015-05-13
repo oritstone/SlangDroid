@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.stoneo.slangdroid" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -23,6 +25,10 @@
         <activity
             android:name=".view.FlowLauncherActivity"
             android:label="@string/title_activity_flow_launcher" >
+        </activity>
+        <activity
+            android:name=".view.RunTrackingActivity"
+            android:label="@string/title_activity_run_tracking" >
         </activity>
     </application>
 

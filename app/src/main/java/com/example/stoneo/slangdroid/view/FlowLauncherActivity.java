@@ -2,22 +2,27 @@ package com.example.stoneo.slangdroid.view;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.stoneo.slangdroid.R;
-import com.example.stoneo.slangdroid.model.Flow;
 import com.example.stoneo.slangdroid.model.FormFlowInput;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +92,23 @@ public class FlowLauncherActivity extends ActionBarActivity {
         return row;
     }
 
+    public void onClickCancel(View view) {
+    }
+
+    public void onClickLaunch(View view) {
+        launchFlow();
+    }
+
+    private void startRunTracking(String runId) {
+        Intent trackingIntent = new Intent(this, RunTrackingActivity.class);
+        trackingIntent.putExtra("runId", runId);
+        startActivity(trackingIntent);
+    }
+
+    private void launchFlow(){
+        new LaunchFlowTask().execute(flowId);
+    }
+
     class GetFlowDataTask extends AsyncTask<String, Void, List<FormFlowInput>> {
 
         //TODO - get from server
@@ -98,6 +120,18 @@ public class FlowLauncherActivity extends ActionBarActivity {
 
         private List<FormFlowInput> getFormFlowInputs(String flowId) {
 
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpContext localContext = new BasicHttpContext();
+            HttpGet httpGet = new HttpGet("http://localhost:8080/flow/" + flowId);
+            String text = null;
+            try {
+                HttpResponse response = httpClient.execute(httpGet, localContext);
+                HttpEntity entity = response.getEntity();
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             ArrayList<FormFlowInput> flowInputs1 = new ArrayList<>();
             flowInputs1.add(new FormFlowInput("input1", "value1", true));
             flowInputs1.add(new FormFlowInput("input2", "value2", false));
@@ -120,4 +154,33 @@ public class FlowLauncherActivity extends ActionBarActivity {
             setInputs(flowInputs);
         }
     }
+
+    class LaunchFlowTask extends AsyncTask<String, Void, String> {
+
+        //TODO - get from server
+        @Override
+        protected String doInBackground(String... params) {
+            String flowId = params[0];
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpContext localContext = new BasicHttpContext();
+            HttpPost httpPost = new HttpPost("http://localhost:8080/executions" + flowId);
+            String text = null;
+            try {
+                HttpResponse response = httpClient.execute(httpPost, localContext);
+                HttpEntity entity = response.getEntity();
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return "77";
+        }
+
+
+        @Override
+        protected void onPostExecute(String runId){
+            startRunTracking(runId);
+        }
+    }
+
 }

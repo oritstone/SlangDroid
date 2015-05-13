@@ -14,6 +14,14 @@ import com.example.stoneo.slangdroid.view.adapters.FlowListAdapter;
 import com.example.stoneo.slangdroid.R;
 import com.example.stoneo.slangdroid.model.Flow;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +64,19 @@ public class FlowListActivity extends ActionBarActivity implements AdapterView.O
         //TODO - get from server
         @Override
         protected List<Flow> doInBackground(Void... params) {
+
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpContext localContext = new BasicHttpContext();
+            HttpGet httpGet = new HttpGet("http://localhost:8080/flows");
+            String text = null;
+            try {
+                HttpResponse response = httpClient.execute(httpGet, localContext);
+                HttpEntity entity = response.getEntity();
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             ArrayList<Flow> flows = new ArrayList<>();
             flows.add(new Flow("flow1", "id1"));
             flows.add(new Flow("flow2", "id2"));

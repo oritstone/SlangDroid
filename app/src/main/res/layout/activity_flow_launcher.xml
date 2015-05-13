@@ -38,13 +38,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cancelFlowLaunchingButtonLabel"
-                android:id="@+id/button" />
+                android:id="@+id/cancelFlowLaunchingButton"
+                android:onClick="onClickCancel"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/launchFlowButtonLabel"
-                android:id="@+id/button2" />
+                android:id="@+id/launchFlowButton"
+                android:onClick="onClickLaunch"/>
         </LinearLayout>
 
     </LinearLayout>
