@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import com.example.stoneo.slangdroid.view.adapters.FlowListAdapter;
 import com.example.stoneo.slangdroid.R;
@@ -34,10 +35,13 @@ public class FlowListActivity extends ActionBarActivity implements AdapterView.O
 
     private ArrayAdapter<Flow> flowsAdapter;
 
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flow_list);
+        progressBar = (ProgressBar) findViewById(R.id.flow_list_progress_bar);
         initFlowList();
     }
 
@@ -101,6 +105,7 @@ public class FlowListActivity extends ActionBarActivity implements AdapterView.O
 
             @Override
         protected void onPostExecute(List<Flow> flows){
+            progressBar.setVisibility(View.INVISIBLE);
             initList(flows);
         }
     }

@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.stoneo.slangdroid.R;
@@ -42,6 +43,8 @@ public class FlowLauncherActivity extends ActionBarActivity {
     private String flowName;
     private String flowPath;
 
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +53,7 @@ public class FlowLauncherActivity extends ActionBarActivity {
         flowId = intent.getStringExtra("flowId");
         flowPath = intent.getStringExtra("flowPath");
         setContentView(R.layout.activity_flow_launcher);
+        progressBar = (ProgressBar) findViewById(R.id.flow_data_progress_bar);
         initUi();
         getData();
     }
@@ -137,6 +141,7 @@ public class FlowLauncherActivity extends ActionBarActivity {
 
     private void launchFlow(){
         new LaunchFlowTask().execute(flowPath);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     class GetFlowDataTask extends AsyncTask<String, Void, List<FormFlowInput>> {
@@ -183,6 +188,7 @@ public class FlowLauncherActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(List<FormFlowInput> flowInputs){
+            progressBar.setVisibility(View.INVISIBLE);
             setInputs(flowInputs);
         }
     }
@@ -239,6 +245,7 @@ public class FlowLauncherActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(Long runId){
+            progressBar.setVisibility(View.INVISIBLE);
             startRunTracking(runId);
         }
     }
