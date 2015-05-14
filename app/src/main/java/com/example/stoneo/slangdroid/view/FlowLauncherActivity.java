@@ -17,19 +17,27 @@ import com.example.stoneo.slangdroid.model.FormFlowInput;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class FlowLauncherActivity extends ActionBarActivity {
@@ -88,6 +96,25 @@ public class FlowLauncherActivity extends ActionBarActivity {
         }
     }
 
+    protected JSONObject getRunInputsAsJson() {
+        HashMap<String, Object> runInputs = new HashMap<>();
+        ViewGroup inputsContainer = (ViewGroup) findViewById(R.id.flowLauncherInputsContainer);
+        JSONObject inputJson = new JSONObject();
+        for(int i = 0; i < inputsContainer.getChildCount(); i++){
+            View inputView = inputsContainer.getChildAt(i);
+            String inputName = ((TextView)inputView.findViewById(R.id.flowInputNameLabel)).getText().toString();
+            String inputValue = ((EditText)inputView.findViewById(R.id.flowInputValueField)).getText().toString();
+            runInputs.put(inputName, inputValue);
+            try {
+                inputJson.put(inputName, inputValue);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return inputJson;
+    }
+
+
     private View createInputRow(FormFlowInput flowInput, ViewGroup inputsContainer) {
         View row = LayoutInflater.from(this).inflate(R.layout.flow_input_row, inputsContainer, false);
         TextView inputName = (TextView) row.findViewById(R.id.flowInputNameLabel);
@@ -104,7 +131,7 @@ public class FlowLauncherActivity extends ActionBarActivity {
         launchFlow();
     }
 
-    private void startRunTracking(String runId) {
+    private void startRunTracking(Long runId) {
         Intent trackingIntent = new Intent(this, RunTrackingActivity.class);
         trackingIntent.putExtra("runId", runId);
         startActivity(trackingIntent);
@@ -116,20 +143,19 @@ public class FlowLauncherActivity extends ActionBarActivity {
 
     class GetFlowDataTask extends AsyncTask<String, Void, List<FormFlowInput>> {
 
-        //TODO - get from server
         @Override
         protected List<FormFlowInput> doInBackground(String... params) {
             String flowId = params[0];
-            return getFormFlowInputs(flowId);
-        }
-
-        private List<FormFlowInput> getFormFlowInputs(String flowId) {
-
             List<FormFlowInput> flowInputs = new ArrayList<>();
 
             HttpClient httpClient = new DefaultHttpClient();
             HttpContext localContext = new BasicHttpContext();
-            HttpGet httpGet = new HttpGet(getString(R.string.baseUrl) + "/flow/" + flowId);
+            String url = null;
+            url = getString(R.string.baseUrl) + "/flow/" + flowId;
+
+            HttpGet httpGet = null;
+            httpGet = new HttpGet(url);
+
             StringBuilder sb;
             try {
                 HttpResponse response = httpClient.execute(httpGet, localContext);
@@ -151,15 +177,10 @@ public class FlowLauncherActivity extends ActionBarActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             return flowInputs;
-
-
         }
 
         @Override
@@ -168,30 +189,61 @@ public class FlowLauncherActivity extends ActionBarActivity {
         }
     }
 
-    class LaunchFlowTask extends AsyncTask<String, Void, String> {
+    class LaunchFlowTask extends AsyncTask<String, Void, Long> {
 
-        //TODO - get from server
         @Override
-        protected String doInBackground(String... params) {
+        protected Long doInBackground(String... params) {
             String flowId = params[0];
             HttpClient httpClient = new DefaultHttpClient();
             HttpContext localContext = new BasicHttpContext();
-            HttpPost httpPost = new HttpPost("http://localhost:8080/executions" + flowId);
-            String text = null;
+            HttpPost httpPost = new HttpPost(getString(R.string.baseUrl) + "/executions");
+
+            JSONObject runInputs = getRunInputsAsJson();
+            String flowPath = "/" + flowId.replace(".", "/") + ".sl";
+
+            JSONObject holder = new JSONObject();
+            try {
+                holder.put("runInputs", runInputs);
+                holder.put("systemProperties", null);
+                holder.put("slangDir", "/content");
+                holder.put("slangFilePath", flowPath);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            StringBuilder sb;
+            Long runId = null;
+            try {
+                httpPost.setEntity(new StringEntity(holder.toString()));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             try {
                 HttpResponse response = httpClient.execute(httpPost, localContext);
                 HttpEntity entity = response.getEntity();
 
+                sb = new StringBuilder();
+                try {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()), 65728);
+                    String line;
 
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    JSONObject returnValue = new JSONObject(sb.toString());
+                    runId = Long.valueOf(returnValue.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return "77";
+            return runId;
         }
 
 
         @Override
-        protected void onPostExecute(String runId){
+        protected void onPostExecute(Long runId){
             startRunTracking(runId);
         }
     }
