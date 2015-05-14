@@ -19,14 +19,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/flowLauncherFlowNameLabel" />
+            android:id="@+id/flowLauncherFlowNameLabel"
+            android:textSize="20dp"
+            android:layout_marginBottom="10dp" />
 
         <LinearLayout
             android:id="@+id/flowLauncherInputsContainer"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1.00"></LinearLayout>
+            android:layout_weight="1.00"
+            android:background="#dedede"
+            android:padding="10dp"
+            android:layout_marginBottom="10dp"/>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -39,14 +44,19 @@
                 android:layout_height="wrap_content"
                 android:text="@string/cancelFlowLaunchingButtonLabel"
                 android:id="@+id/cancelFlowLaunchingButton"
-                android:onClick="onClickCancel"/>
+                android:onClick="onClickCancel"
+                android:layout_weight="1"
+                android:background="@color/dim_foreground_material_dark"
+                android:layout_marginRight="10dp" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/launchFlowButtonLabel"
                 android:id="@+id/launchFlowButton"
-                android:onClick="onClickLaunch"/>
+                android:onClick="onClickLaunch"
+                android:layout_weight="1"
+                android:background="@color/dim_foreground_material_dark" />
         </LinearLayout>
 
     </LinearLayout>
