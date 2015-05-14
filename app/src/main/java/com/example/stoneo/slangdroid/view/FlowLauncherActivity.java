@@ -17,14 +17,11 @@ import com.example.stoneo.slangdroid.model.FormFlowInput;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
@@ -35,7 +32,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +40,7 @@ public class FlowLauncherActivity extends ActionBarActivity {
 
     private String flowId;
     private String flowName;
+    private String flowPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +48,7 @@ public class FlowLauncherActivity extends ActionBarActivity {
         Intent intent = getIntent();
         flowName = intent.getStringExtra("flowName");
         flowId = intent.getStringExtra("flowId");
+        flowPath = intent.getStringExtra("flowPath");
         setContentView(R.layout.activity_flow_launcher);
         initUi();
         getData();
@@ -138,7 +136,7 @@ public class FlowLauncherActivity extends ActionBarActivity {
     }
 
     private void launchFlow(){
-        new LaunchFlowTask().execute(flowId);
+        new LaunchFlowTask().execute(flowPath);
     }
 
     class GetFlowDataTask extends AsyncTask<String, Void, List<FormFlowInput>> {
@@ -150,8 +148,8 @@ public class FlowLauncherActivity extends ActionBarActivity {
 
             HttpClient httpClient = new DefaultHttpClient();
             HttpContext localContext = new BasicHttpContext();
-            String url = null;
-            url = getString(R.string.baseUrl) + "/flow/" + flowId;
+            //TODO: the last . added is a temporary dirty solution
+            String url = getString(R.string.baseUrl) + "/flow/" + flowId + ".";
 
             HttpGet httpGet = null;
             httpGet = new HttpGet(url);
@@ -193,19 +191,17 @@ public class FlowLauncherActivity extends ActionBarActivity {
 
         @Override
         protected Long doInBackground(String... params) {
-            String flowId = params[0];
+            String flowPath = params[0];
             HttpClient httpClient = new DefaultHttpClient();
             HttpContext localContext = new BasicHttpContext();
             HttpPost httpPost = new HttpPost(getString(R.string.baseUrl) + "/executions");
 
             JSONObject runInputs = getRunInputsAsJson();
-            String flowPath = "/" + flowId.replace(".", "/") + ".sl";
 
             JSONObject holder = new JSONObject();
             try {
                 holder.put("runInputs", runInputs);
                 holder.put("systemProperties", null);
-                holder.put("slangDir", "/content");
                 holder.put("slangFilePath", flowPath);
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -58,6 +58,7 @@ public class FlowListActivity extends ActionBarActivity implements AdapterView.O
         Intent flowLauncherIntent = new Intent(this, FlowLauncherActivity.class);
         flowLauncherIntent.putExtra("flowId", flow.getId());
         flowLauncherIntent.putExtra("flowName", flow.getName());
+        flowLauncherIntent.putExtra("flowPath", flow.getPath());
         startActivity(flowLauncherIntent);
     }
 
@@ -86,7 +87,7 @@ public class FlowListActivity extends ActionBarActivity implements AdapterView.O
                     int numOfFlows = flows.length();
                     for (int i = 0; i < numOfFlows; i++) {
                         JSONObject flow = flows.getJSONObject(i);
-                        flowsList.add(new Flow(flow.getString("name"), flow.getString("id")));
+                        flowsList.add(new Flow(flow.getString("name"), flow.getString("id"), flow.getString("path")));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
