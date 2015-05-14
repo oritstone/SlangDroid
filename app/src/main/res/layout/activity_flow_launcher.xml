@@ -20,15 +20,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/flowLauncherFlowNameLabel"
-            android:textSize="20dp"
-            android:layout_marginBottom="10dp" />
+            android:textSize="30dp" />
 
         <ProgressBar
             android:id="@+id/flow_data_progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@android:style/Widget.ProgressBar.Small"
-            android:layout_marginRight="5dp" />
+            android:layout_centerInParent="true" />
 
         <LinearLayout
             android:id="@+id/flowLauncherInputsContainer"
@@ -46,15 +45,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.03">
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cancelFlowLaunchingButtonLabel"
-                android:id="@+id/cancelFlowLaunchingButton"
-                android:onClick="onClickCancel"
-                android:layout_weight="1"
-                android:background="@color/dim_foreground_material_dark"
-                android:layout_marginRight="10dp" />
+            <!--<Button-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/cancelFlowLaunchingButtonLabel"-->
+                <!--android:id="@+id/cancelFlowLaunchingButton"-->
+                <!--android:onClick="onClickCancel"-->
+                <!--android:layout_weight="1"-->
+                <!--android:background="@color/dim_foreground_material_dark"-->
+                <!--android:layout_marginRight="10dp" />-->
 
             <Button
                 android:layout_width="wrap_content"
