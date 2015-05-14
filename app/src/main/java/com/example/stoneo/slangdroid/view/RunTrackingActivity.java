@@ -1,18 +1,43 @@
 package com.example.stoneo.slangdroid.view;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.stoneo.slangdroid.R;
+import com.example.stoneo.slangdroid.model.RunSummary;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
+import org.json.JSONArray;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class RunTrackingActivity extends ActionBarActivity {
+
+    private Long runId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        runId = intent.getLongExtra("runId", -1);
         setContentView(R.layout.activity_run_tracking);
+        getData();
+    }
+
+    private void getData() {
+        new GetRunStatusTask().execute(runId);
     }
 
     @Override
@@ -35,5 +60,44 @@ public class RunTrackingActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    class GetRunStatusTask extends AsyncTask<Long, Void, RunSummary> {
+
+        @Override
+        protected RunSummary doInBackground(Long... params) {
+            Long runId = params[0];
+
+            HttpClient httpClient = new DefaultHttpClient();
+            HttpContext localContext = new BasicHttpContext();
+            String url = getString(R.string.baseUrl) + "/executions/" + runId;
+
+            HttpGet httpGet = new HttpGet(url);
+            StringBuilder sb;
+            try {
+                HttpResponse response = httpClient.execute(httpGet, localContext);
+                HttpEntity entity = response.getEntity();
+                sb = new StringBuilder();
+                try {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()), 65728);
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    JSONArray runSummary = new JSONArray(sb.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(RunSummary runSummary){
+            //TODO: update UI
+        }
     }
 }
