@@ -226,8 +226,7 @@ public class FlowLauncherActivity extends ActionBarActivity {
                     while ((line = reader.readLine()) != null) {
                         sb.append(line);
                     }
-                    JSONObject returnValue = new JSONObject(sb.toString());
-                    runId = Long.valueOf(returnValue.toString());
+                    runId = Long.valueOf(sb.toString());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

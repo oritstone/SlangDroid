@@ -17,7 +17,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
-import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -85,7 +85,8 @@ public class RunTrackingActivity extends ActionBarActivity {
                     while ((line = reader.readLine()) != null) {
                         sb.append(line);
                     }
-                    JSONArray runSummary = new JSONArray(sb.toString());
+                    JSONObject result = new JSONObject(sb.toString());
+                    return new RunSummary(result.getLong("executionId"), result.getString("status"), result.getString("result"), result.getString("outputs"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
