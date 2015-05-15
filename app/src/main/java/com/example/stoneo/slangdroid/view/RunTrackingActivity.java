@@ -73,6 +73,8 @@ public class RunTrackingActivity extends ActionBarActivity {
 
         @Override
         protected RunSummary doInBackground(Long... params) {
+            RunSummary runSummary = null;
+            String runStatus = "RUNNING";
             Long runId = params[0];
 
             HttpClient httpClient = new DefaultHttpClient();
@@ -82,25 +84,28 @@ public class RunTrackingActivity extends ActionBarActivity {
             HttpGet httpGet = new HttpGet(url);
             StringBuilder sb;
             try {
-                HttpResponse response = httpClient.execute(httpGet, localContext);
-                HttpEntity entity = response.getEntity();
-                sb = new StringBuilder();
-                try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()), 65728);
-                    String line;
+                while(runStatus.equals("RUNNING")) {
+                    HttpResponse response = httpClient.execute(httpGet, localContext);
+                    HttpEntity entity = response.getEntity();
+                    sb = new StringBuilder();
+                    try {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(entity.getContent()), 65728);
+                        String line;
 
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line);
+                        while ((line = reader.readLine()) != null) {
+                            sb.append(line);
+                        }
+                        JSONObject result = new JSONObject(sb.toString());
+                        runSummary = new RunSummary(result.getLong("executionId"), result.getString("status"), result.getString("result"), result.getString("outputs"));
+                        runStatus = runSummary.getStatus();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    JSONObject result = new JSONObject(sb.toString());
-                    return new RunSummary(result.getLong("executionId"), result.getString("status"), result.getString("result"), result.getString("outputs"));
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return null;
+            return runSummary;
         }
 
         @Override
