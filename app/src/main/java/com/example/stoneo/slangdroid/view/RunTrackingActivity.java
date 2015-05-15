@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.stoneo.slangdroid.R;
 import com.example.stoneo.slangdroid.model.RunSummary;
@@ -27,12 +30,16 @@ public class RunTrackingActivity extends ActionBarActivity {
 
     private Long runId;
 
+    private ProgressBar progressBar;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         runId = intent.getLongExtra("runId", -1);
         setContentView(R.layout.activity_run_tracking);
+        progressBar = (ProgressBar) findViewById(R.id.flow_data_progress_bar);
         getData();
     }
 
@@ -98,7 +105,11 @@ public class RunTrackingActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(RunSummary runSummary){
-            //TODO: update UI
+            progressBar.setVisibility(View.INVISIBLE);
+            findViewById(R.id.run_status_label).setVisibility(View.VISIBLE);
+            findViewById(R.id.run_result_label).setVisibility(View.VISIBLE);
+            ((TextView)findViewById(R.id.run_status_value)).setText(runSummary.getStatus());
+            ((TextView)findViewById(R.id.run_result_value)).setText(runSummary.getResult());
         }
     }
 }

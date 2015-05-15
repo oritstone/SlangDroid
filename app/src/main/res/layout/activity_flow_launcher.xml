@@ -19,8 +19,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/flowLauncherFlowNameLabel"
-            android:textSize="30dp" />
+            android:id="@+id/flowLauncherFlowNameLabel"/>
 
         <ProgressBar
             android:id="@+id/flow_data_progress_bar"

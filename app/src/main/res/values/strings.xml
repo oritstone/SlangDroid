@@ -4,14 +4,14 @@
     <string name="startScreenMessage1">Welcome To CloudSlang</string>
     <string name="startScreenMessage2">Care for some action?</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_flow_list">FlowListActivity</string>
+    <string name="title_activity_flow_list">List of available flows</string>
     <string name="runFlowButtonLabel">Run A Flow</string>
     <string name="newFlowButtonLabel">Create New Flow</string>
-    <string name="title_activity_flow_launcher">FlowLauncherActivity</string>
+    <string name="title_activity_flow_launcher">Launch a flow</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="cancelFlowLaunchingButtonLabel">Cancel</string>
     <string name="launchFlowButtonLabel">Launch</string>
-    <string name="title_activity_run_tracking">RunTrackingActivity</string>
+    <string name="title_activity_run_tracking">Launch tracking</string>
     <string name="baseUrl">https://cloud-slang-webapp.herokuapp.com</string>
 </resources>
