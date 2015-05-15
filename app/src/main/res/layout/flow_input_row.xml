@@ -8,7 +8,8 @@
         android:layout_width="150dp"
         android:layout_height="33dp"
         android:id="@+id/flowInputNameLabel"
-        android:layout_weight="0.01" />
+        android:layout_weight="0.01"
+        android:textSize="20dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -16,5 +17,6 @@
         android:hint="000000000000"
         android:textColorHint="#00FFFFFF"
         android:id="@+id/flowInputValueField"
-        android:layout_weight="0.84" />
+        android:layout_weight="0.84"
+        android:textSize="20dp" />
 </LinearLayout>
